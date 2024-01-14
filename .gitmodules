@@ -1,3 +1,6 @@
 [submodule "flash-attention"]
 	path = flash-attention
 	url = https://github.com/HazyResearch/flash-attention.git
+[submodule "flash-linear-attention"]
+	path = flash-linear-attention
+	url = https://github.com/sustcsonglin/flash-linear-attention.git
