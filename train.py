@@ -631,7 +631,8 @@ def create_trainer(config, **kwargs):
 
         for stage in config.callbacks.seqlen_warmup_reload.stage_params:
             batch_size = stage['batch_size']  # curr batch size at this stage
-            grad_accum_factor = config.train.global_batch_size // batch_size  # grad accum factor for this stage
+            seq_len = stage['seq_len']
+            grad_accum_factor = config.train.token_per_batch // (batch_size * n_devices * seq_len)  # grad accum factor for this stage
             accumulate_grad_schedule[epochs_cume] = grad_accum_factor  # set the grad accum factor for this stage
             epochs_cume += stage['epochs']  # increment epochs_cume for next stage
         trainer_config_dict['accumulate_grad_batches'] = accumulate_grad_schedule  # set the accumulate_grad_batches schedule

@@ -40,6 +40,7 @@ layer = {
     "hyena": "src.models.sequence.hyena.HyenaOperator",
     "hyena-filter": "src.models.sequence.hyena.HyenaFilter",
     "vit": "src.models.sequence.mha.VitAttention",
+    'gla': 'fla.layers.gla.GatedLinearAttention',
 }
 
 callbacks = {
