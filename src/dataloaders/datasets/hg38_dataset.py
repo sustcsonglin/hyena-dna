@@ -1,12 +1,12 @@
 
 from pathlib import Path
-from pyfaidx import Fasta
-import polars as pl
-import pandas as pd
-import torch
-from random import randrange, random
-import numpy as np
+from random import random, randrange
 
+import numpy as np
+import pandas as pd
+import polars as pl
+import torch
+from pyfaidx import Fasta
 
 """
 
@@ -163,8 +163,27 @@ class HG38Dataset(torch.utils.data.Dataset):
         # read bed file
         df_raw = pd.read_csv(str(bed_path), sep = '\t', names=['chr_name', 'start', 'end', 'split'])
         # select only split df
+
+        
         self.df = df_raw[df_raw['split'] == split]
 
+        ## the same as mamba https://arxiv.org/pdf/2312.00752.pdf E.3.1
+        if split == 'train':
+            dp = []
+            for i in range(len(self.df)):
+                char_name = self.df['chr_name'][i]
+                start = self.df['start'][i]
+                end = self.df['end'][i]
+                split = 'train'
+                if max_length <= (2 ** 17):
+                    for s in range(start, end, max_length):
+                        e = s + max_length
+                        dp.append([char_name, s, e, split])                
+                else:
+                    dp.append([char_name, start, start + max_length, split])
+                    dp.append([char_name, end - max_length, end, split])
+            self.df = pd.DataFrame(dp, columns=['chr_name', 'start', 'end', 'split'])        
+            
         self.fasta = FastaInterval(
             fasta_file = fasta_file,
             # max_length = max_length,
@@ -173,6 +192,7 @@ class HG38Dataset(torch.utils.data.Dataset):
             rc_aug = rc_aug,
             pad_interval = pad_interval,
         )
+
 
     def __len__(self):
         return len(self.df)
