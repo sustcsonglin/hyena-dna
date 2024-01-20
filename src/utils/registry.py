@@ -41,6 +41,8 @@ layer = {
     "hyena-filter": "src.models.sequence.hyena.HyenaFilter",
     "vit": "src.models.sequence.mha.VitAttention",
     'gla': 'fla.layers.gla.GatedLinearAttention',
+    'retnet': 'fla.layers.multiscale_retention.MultiScaleRetention',
+    'mamba': 'src.models.sequence.mamba.Mamba',
 }
 
 callbacks = {
